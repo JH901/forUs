@@ -1,0 +1,20 @@
+
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/EasyTravel?serverTimezone=Asia/Seoul
+    username: root
+    password: Nbyufa1!
+
+easy-travel:
+  data:
+    currency:
+      url: https://www.koreaexim.go.kr/site/program/financial/exchangeJSON
+      api-key: EZ361j4Z62giStp4zAvGM7R4ABShWhh9
+
