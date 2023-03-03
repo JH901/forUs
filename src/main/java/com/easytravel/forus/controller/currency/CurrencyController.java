@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.math.BigDecimal;
@@ -34,5 +35,10 @@ public class CurrencyController {
     public ResponseEntity<BigDecimal> getCurrencyInfo(
             @PathVariable("from") String from, @PathVariable("to") String to) throws Exception {
         return new ResponseEntity<>(currencyService.getCurrencyInfo(from, to), HttpStatus.OK);
+    }
+
+    @PostMapping
+    public void setCurrencyInfo(){
+        currencyService.setCurrencyInfo();
     }
 }
