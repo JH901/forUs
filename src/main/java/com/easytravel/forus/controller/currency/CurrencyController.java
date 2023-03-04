@@ -7,10 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -36,11 +33,11 @@ public class CurrencyController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @GetMapping({"/{from}-{to}/{amount}", "/{from}-{to}"})
+    @GetMapping("/value")
     public ResponseEntity<BigDecimal> getConversionValue(
-            @PathVariable("from") String from,
-            @PathVariable("to") String to,
-            @PathVariable(value = "amount", required = false) BigDecimal amount
+            @RequestParam("from") String from,
+            @RequestParam("to") String to,
+            @RequestParam("amount") BigDecimal amount
     ) throws Exception {
         return new ResponseEntity<>(currencyService.getConversionValue(from, to, amount), HttpStatus.OK);
     }

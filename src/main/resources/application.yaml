@@ -15,6 +15,6 @@ spring:
 easy-travel:
   data:
     currency:
-      url: https://www.koreaexim.go.kr/site/program/financial/exchangeJSON
-      api-key: EZ361j4Z62giStp4zAvGM7R4ABShWhh9
+      url: https://api.apilayer.com/fixer
+      api-key: vLnpNpDOE4MHD5D7wM6QULz7pcMI03TK
 

@@ -1,21 +1,16 @@
 package com.easytravel.forus.service.currency;
 
-import com.easytravel.forus.code.CurrencyDataType;
 import com.easytravel.forus.config.EasyTravelConfig;
 import com.easytravel.forus.domain.CurrencyInfo;
 import com.easytravel.forus.feign.currency.CurrencyFeignClient;
+import com.easytravel.forus.feign.currency.response.CurrencyInformationResponse;
 import com.easytravel.forus.repository.CurrencyRepository;
-import com.easytravel.forus.util.DateTimeUtil;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +32,6 @@ public class CurrencyService {
      * 환율 정보 조회
      * */
     public BigDecimal getConversionValue(String from, String to, BigDecimal amount) throws Exception {
-        amount = ObjectUtils.isEmpty(amount) ? BigDecimal.ONE : amount;
         return getCurrencyInfo(from, to).multiply(amount);
     }
 
@@ -47,21 +41,14 @@ public class CurrencyService {
         final CurrencyInfo toInfo = currencyRepository.findById(to)
                 .orElseThrow(() -> new Exception(to + "은/는 지원하지 않는 통화입니다."));
 
-        return fromInfo.krwValue().divide(toInfo.krwValue(), 5, RoundingMode.HALF_UP);
+        return fromInfo.getValue().divide(toInfo.getValue(), 5, RoundingMode.HALF_UP);
     }
 
     public void setCurrencyInfo() {
-        final LocalDate now = DateTimeUtil.getKoreaLocalDate();
-        if (!DateTimeUtil.isWeekend(now)) {
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        CurrencyInformationResponse response = currencyFeignClient.getCurrencyInfo(currencyConfig.getApiKey(), "KRW");
 
-            final String date = DateTimeUtil.getDateByFormat(now, "yyyymmdd");
-            List<CurrencyInfo> result = new ArrayList<>();
-            List currencyInfo = currencyFeignClient.getCurrencyInfo(currencyConfig.getApiKey(), date, CurrencyDataType.AP01.getTypeCd());
-            currencyInfo.forEach(info -> result.add(objectMapper.convertValue(info, CurrencyInfo.class)));
-
-            currencyRepository.saveAll(result);
-        }
+        List<CurrencyInfo> result = new ArrayList<>();
+        response.getRates().forEach((symbol, value) -> result.add(CurrencyInfo.of(symbol, value)));
+        currencyRepository.saveAll(result);
     }
 }
