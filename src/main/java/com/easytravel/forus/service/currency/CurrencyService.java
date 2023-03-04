@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -36,6 +37,7 @@ public class CurrencyService {
      * 환율 정보 조회
      * */
     public BigDecimal getConversionValue(String from, String to, BigDecimal amount) throws Exception {
+        amount = ObjectUtils.isEmpty(amount) ? BigDecimal.ONE : amount;
         return getCurrencyInfo(from, to).multiply(amount);
     }
 

@@ -36,11 +36,11 @@ public class CurrencyController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @GetMapping("/{from}-{to}/{amount}")
+    @GetMapping({"/{from}-{to}/{amount}", "/{from}-{to}"})
     public ResponseEntity<BigDecimal> getConversionValue(
             @PathVariable("from") String from,
             @PathVariable("to") String to,
-            @PathVariable("amount") BigDecimal amount
+            @PathVariable(value = "amount", required = false) BigDecimal amount
     ) throws Exception {
         return new ResponseEntity<>(currencyService.getConversionValue(from, to, amount), HttpStatus.OK);
     }
