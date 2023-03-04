@@ -27,18 +27,21 @@ public class CurrencyController {
     public ResponseEntity<CurrencyInfoResponse> getCurrencyInfoList(){
         final String date = LocalDate.now().format(DateTimeFormatter.ISO_DATE);
         final List<CurrencyInfo> currencyInfoList = currencyService.getCurrencyInfoList();
-
         return new ResponseEntity<>(CurrencyInfoResponse.of(date, currencyInfoList), HttpStatus.OK);
     }
 
-    @GetMapping("/{from}-{to}")
-    public ResponseEntity<BigDecimal> getCurrencyInfo(
-            @PathVariable("from") String from, @PathVariable("to") String to) throws Exception {
-        return new ResponseEntity<>(currencyService.getCurrencyInfo(from, to), HttpStatus.OK);
+    @PostMapping
+    public ResponseEntity setCurrencyInfo(){
+        currencyService.setCurrencyInfo();
+        return new ResponseEntity(HttpStatus.OK);
     }
 
-    @PostMapping
-    public void setCurrencyInfo(){
-        currencyService.setCurrencyInfo();
+    @GetMapping("/{from}-{to}/{amount}")
+    public ResponseEntity<BigDecimal> getConversionValue(
+            @PathVariable("from") String from,
+            @PathVariable("to") String to,
+            @PathVariable("amount") BigDecimal amount
+    ) throws Exception {
+        return new ResponseEntity<>(currencyService.getConversionValue(from, to, amount), HttpStatus.OK);
     }
 }
